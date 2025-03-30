@@ -5,7 +5,7 @@ export interface BaseUser {
     id: number;
     firstName: string | null;
     lastName: string | null;
-    email: string; // Assuming email is generally available
+    email: string;
 }
 
 export interface OrganizerProfileInfo {
@@ -13,71 +13,83 @@ export interface OrganizerProfileInfo {
     description?: string | null;
     contactPhone?: string | null;
     website?: string | null;
-    // Add other profile fields if needed
 }
 
-// Used when fetching detailed organizer info (e.g., in EventDetails)
 export interface DetailedOrganizer extends BaseUser {
     organizerInfo?: OrganizerProfileInfo | null;
 }
 
-// Used when organizer info is summarized (e.g., in EventList)
 export interface BaseOrganizer extends BaseUser {
-     organizerInfo?: Pick<OrganizerProfileInfo, 'orgName'> | null; // Only include orgName for lists
+     organizerInfo?: Pick<OrganizerProfileInfo, 'orgName'> | null;
 }
 
 
 // --- Event Types ---
 
-// Fields common to both list view and detail view
 export interface BaseEvent {
     id: number;
     title: string;
     description: string;
     date: string; // ISO Date string from backend
     location: string;
-    category?: string | null; // Optional field
-    ageGroup?: string | null; // Optional field
-    createdAt: string; // Assuming these are returned
+    category?: string | null;
+    ageGroup?: string | null;
+    price?: number | null; // Optional number for price
+    createdAt: string;
     updatedAt: string;
 }
 
-// Type for the data returned by GET /events (List View)
 export interface EventListItem extends BaseEvent {
-   organizer: BaseOrganizer; // Use BaseOrganizer for lists
-   _count?: { // Optional registration count if included
+   organizer: BaseOrganizer;
+   _count?: {
         registrations?: number;
    };
+   price?: number | null; // Ensure price is here if needed for list card
 }
 
-// Type for the data returned by GET /events/:id (Detail View)
 export interface EventDetails extends BaseEvent {
-    organizer: DetailedOrganizer; // Use DetailedOrganizer for details
-    // Add any other fields specific to the detailed view if applicable
-    // e.g., registrations?: Registration[]; (if participants are included directly)
+    organizer: DetailedOrganizer;
+    price?: number | null;
 }
 
 
 // --- Registration Types ---
+
+// Base Registration type, used for lists like ParentDashboard
 export interface Registration {
     id: number;
     eventId: number;
     userId: number;
     registeredAt: string;
-    // Optional child info if added
     childName?: string | null;
     childAge?: number | null;
-     // Include related data if needed
-     user?: BaseUser;
-     event?: Pick<BaseEvent, 'id' | 'title' | 'date'>; // Only pick necessary fields
+    user?: BaseUser;
+    // Event details needed for display (e.g., in ParentDashboard using EventCard)
+    // Make optional if sometimes it's not included in a query
+    event?: Pick<BaseEvent, 'id' | 'title' | 'date' | 'location' | 'description' | 'category' | 'ageGroup' | 'price'> & { imageUrl?: string | null, timeInfo?: string | null }; // Add other fields EventCard might need
 }
 
-// Type for the response from POST /events/:id/register
-export interface RegistrationResponse extends Registration {
-    event: Pick<BaseEvent, 'id' | 'title' | 'date'>; // Ensure event subset is present
+// --- FIX: Define RegistrationResponse independently ---
+// Type specifically for the response from POST /events/:id/register endpoint
+export interface RegistrationResponse {
+    // Include fields returned by the registration endpoint
+    id: number;
+    eventId: number;
+    userId: number;
+    registeredAt: string;
+    // Optional child info if returned
+    childName?: string | null;
+    childAge?: number | null;
+    // Define the specific event subset returned by this endpoint
+    event: Pick<BaseEvent, 'id' | 'title' | 'date'>;
+}
+// --- END FIX ---
+
+
+// Type for the response from POST /events (Create Event)
+export interface CreateEventResponse extends BaseEvent {
+    organizer: Pick<BaseOrganizer, 'id' | 'firstName' | 'lastName'>;
+    organizerId: number;
+    price?: number | null;
 }
 
-export interface CreateEventResponse extends BaseEvent { // Includes fields from BaseEvent
-    organizer: Pick<BaseOrganizer, 'id' | 'firstName' | 'lastName'>; // Includes the specific selection
-    organizerId: number; // The foreign key is also typically returned
-}
