@@ -13,6 +13,7 @@ import Navbar from './components/Navbar'; // Create later
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'; // Optional dev tools
 import ParentDashboard from './pages/ParentDashboard';
 import ProfilePage from './pages/ProfilePage';
+import OrganizerProfilePage from './pages/OrganizerProfile';
 
 // Create a client
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/organizer/:organizerId" element={<OrganizerProfilePage />} />
           </Routes>
         </div>
       </Router>
