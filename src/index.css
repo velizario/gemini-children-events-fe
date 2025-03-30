@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+
+.input { @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm; }
+.input-bordered { @apply border-gray-300; } 
+.input-error { @apply border-red-500 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500; }
+.select { @apply block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm; }
+.select-bordered { @apply border-gray-300; }
+.select-error { @apply border-red-500 text-red-900 focus:border-red-500 focus:ring-red-500; }
+.btn { @apply inline-flex items-center justify-center rounded-md border border-transparent px-4 py-2 text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2; }
+.btn-primary { @apply border-transparent bg-indigo-600 text-white hover:bg-indigo-700 focus:ring-indigo-500; }
+.btn-ghost { @apply border-transparent bg-transparent text-gray-700 hover:bg-gray-50 focus:ring-indigo-500; }
